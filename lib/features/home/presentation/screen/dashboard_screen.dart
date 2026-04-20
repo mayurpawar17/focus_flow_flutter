@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focus_flow_flutter/features/home/presentation/screen/new_entry_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -128,7 +129,12 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => NewEntryScreen()),
+          );
+        },
         backgroundColor: const Color(0xFF5D5FEF),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         child: const Icon(Icons.add, color: Colors.white, size: 30),
