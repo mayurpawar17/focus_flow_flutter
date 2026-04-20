@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:focus_flow_flutter/features/profile/presentation/screen/profile_screen.dart';
+import 'package:focus_flow_flutter/features/summary/presentation/bloc/screen/summary_screen.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import 'dashboard_screen.dart';
@@ -15,8 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     DashboardScreen(),
-    Scaffold(body: Center(child: Text("AI Summary Screen"))),
-    Scaffold(body: Center(child: Text("Profile Screen"))),
+    SummaryScreen(),
+    ProfileScreen(),
   ];
 
   @override

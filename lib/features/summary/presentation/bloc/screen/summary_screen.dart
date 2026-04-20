@@ -1,0 +1,397 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../../core/constants/app_colors.dart';
+
+class SummaryScreen extends StatelessWidget {
+  const SummaryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.scaffoldBg,
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              "Today's Summary",
+              style: GoogleFonts.outfit(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textHeadline,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Wednesday, October 25th — Your focus peak was at 10:45 AM.',
+              style: TextStyle(color: AppColors.textBody, fontSize: 14),
+            ),
+            const SizedBox(height: 30),
+
+            _buildAIPerspectiveCard(),
+            const SizedBox(height: 16),
+
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatTile(
+                    '14',
+                    'Tasks Completed',
+                    Icons.check_circle_outline,
+                    '+12% vs yesterday',
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildStatTile(
+                    '6.5h',
+                    'Total Time Focused',
+                    Icons.timer_outlined,
+                    'Daily Goal: 8h',
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+            _buildFocusDistributionCard(),
+            const SizedBox(height: 16),
+            _buildActionableInsights(),
+            const SizedBox(height: 16),
+            _buildReflectCard(),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAIPerspectiveCard() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 20),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.auto_awesome, size: 14, color: AppColors.primary),
+                SizedBox(width: 6),
+                Text(
+                  'AI PERSPECTIVE',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: GoogleFonts.outfit(
+                fontSize: 18,
+                color: AppColors.textHeadline,
+                height: 1.4,
+              ),
+              children: const [
+                TextSpan(
+                  text:
+                      '"You were highly focused on deep work today! Your ability to maintain concentration for ',
+                ),
+                TextSpan(
+                  text: '140 minutes',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      ' straight during the morning session set a high momentum for the day."',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 120,
+                height: 120,
+                child: CircularProgressIndicator(
+                  value: 0.82,
+                  strokeWidth: 12,
+                  backgroundColor: AppColors.surface,
+                  color: AppColors.primary,
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
+              Column(
+                children: [
+                  Text(
+                    '82%',
+                    style: GoogleFonts.outfit(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Text(
+                    'EFFICIENCY',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatTile(
+    String val,
+    String label,
+    IconData icon,
+    String subtitle,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, size: 20, color: AppColors.textHeadline),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            val,
+            style: GoogleFonts.outfit(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: AppColors.textBody),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFocusDistributionCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Focus Distribution',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '9AM',
+                style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+              ),
+              Text(
+                '11AM',
+                style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+              ),
+              Text(
+                '1PM',
+                style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+              ),
+              Text(
+                '3PM',
+                style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+              ),
+              Text(
+                '5PM',
+                style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildDistRow('Deep Work', '4.2h', AppColors.primary),
+          const SizedBox(height: 12),
+          _buildDistRow(
+            'Collaboration',
+            '1.8h',
+            AppColors.primary.withOpacity(0.5),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDistRow(String label, String time, Color color) {
+    return Row(
+      children: [
+        CircleAvatar(radius: 4, backgroundColor: color),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 13, color: AppColors.textBody),
+        ),
+        const Spacer(),
+        Text(
+          time,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionableInsights() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.lightbulb_outline, size: 20, color: AppColors.primary),
+              SizedBox(width: 8),
+              Text(
+                'Actionable Insights',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildInsightItem(
+            'Morning Peak',
+            'You complete 65% of your high-priority tasks before 11:00 AM.',
+          ),
+          const SizedBox(height: 12),
+          _buildInsightItem(
+            'Attention Decay',
+            'Your focus typically drops after 90 minutes. A short walk could help.',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightItem(String title, String desc) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            desc,
+            style: const TextStyle(fontSize: 13, color: AppColors.textBody),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReflectCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Reflect on the Flow',
+            style: GoogleFonts.outfit(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'How did today feel? Taking a moment helps build a sustainable rhythm.',
+            style: TextStyle(color: AppColors.textBody),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            label: const Icon(Icons.arrow_forward),
+            icon: const Text('Log Reflection'),
+          ),
+        ],
+      ),
+    );
+  }
+}

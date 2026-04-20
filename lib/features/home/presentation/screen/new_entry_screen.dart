@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
-// Assuming AppColors is in your project as defined previously
 class NewEntryScreen extends StatelessWidget {
   const NewEntryScreen({super.key});
 
@@ -11,34 +10,6 @@ class NewEntryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-      // appBar: AppBar(
-      //   surfaceTintColor: Colors.transparent,
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   // title: Row(
-      //   //   children: [
-      //   //     const Icon(Icons.blur_on, color: AppColors.primary),
-      //   //     const SizedBox(width: 8),
-      //   //     Text(
-      //   //       'FocusFlow',
-      //   //       style: GoogleFonts.outfit(
-      //   //         fontWeight: FontWeight.bold,
-      //   //         color: AppColors.primary,
-      //   //       ),
-      //   //     ),
-      //   //   ],
-      //   // ),
-      //   // actions: [
-      //   //   IconButton(
-      //   //     onPressed: () {},
-      //   //     icon: const Icon(Icons.history_rounded, color: AppColors.iconLight),
-      //   //     style: IconButton.styleFrom(
-      //   //       backgroundColor: Colors.black.withOpacity(0.05),
-      //   //     ),
-      //   //   ),
-      //   //   const SizedBox(width: 16),
-      //   // ],
-      // ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
