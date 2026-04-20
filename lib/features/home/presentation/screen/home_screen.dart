@@ -47,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Dashboard',
           ),
           const NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart, color: AppColors.primary),
-            label: 'Analytics',
+            icon: Icon(Icons.auto_awesome_outlined),
+            selectedIcon: Icon(Icons.auto_awesome, color: AppColors.primary),
+            label: 'AI Summary',
           ),
           const NavigationDestination(
             icon: Icon(Icons.person_outline),
