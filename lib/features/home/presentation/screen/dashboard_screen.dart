@@ -1,143 +1,117 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:focus_flow_flutter/features/home/presentation/screen/new_entry_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focus_flow_flutter/core/constants/app_colors.dart';
+import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
+import 'package:focus_flow_flutter/core/widgets/app_button.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../core/network/dio_client.dart';
+import '../../../entry/data/repo/entry_repo.dart';
+import '../../../entry/presentation/bloc/entry_bloc.dart';
+import '../../../entry/presentation/bloc/entry_event.dart';
+import '../../../entry/presentation/bloc/entry_state.dart';
+import '../widgets/dashboard_header.dart';
+import 'new_entry_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
+  String _formatTime(DateTime time) {
+    return "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   title: Row(
-      //     children: [
-      //       const Icon(Icons.blur_on, color: Color(0xFF5D5FEF)),
-      //       const SizedBox(width: 8),
-      //       Text(
-      //         'FocusFlow',
-      //         style: GoogleFonts.outfit(
-      //           fontWeight: FontWeight.bold,
-      //           color: const Color(0xFF5D5FEF),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.search, color: Colors.black54),
-      //       style: IconButton.styleFrom(backgroundColor: Colors.black.withOpacity(0.05)),
-      //     ),
-      //     const SizedBox(width: 8),
-      //     const CircleAvatar(
-      //       radius: 18,
-      //       backgroundColor: Color(0xFF1E1E1E),
-      //       child: Icon(Icons.person, size: 20, color: Colors.white),
-      //     ),
-      //     const SizedBox(width: 16),
-      //   ],
-      // ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                'WORKSPACE',
-                style: GoogleFonts.outfit(
-                  letterSpacing: 2,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF5D5FEF),
+    return BlocProvider(
+      create: (context) {
+        final dioClient = DioClient();
+        final dio = Dio(); // ideally inject from DioClient
+        // final dataSource = EntryRemoteDataSourceImpl(dio);
+        final repository = EntryRemoteDataSourceImpl(dioClient.dio);
+        return EntryBloc(repository)..add(FetchTodayEntries());
+      },
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF8FAFC),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const DashboardHeader(),
+
+                    AppSpacing.vxl,
+                    AppButton(
+                      label: "Summary",
+                      onPressed: () {
+                        context.read<EntryBloc>().add(FetchTodaySummary());
+                      },
+                    ),
+                    AppSpacing.vxl,
+                    Expanded(
+                      child: BlocBuilder<EntryBloc, EntryState>(
+                        builder: (context, state) {
+                          if (state.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (state.error != null) {
+                            return Center(child: Text(state.error.toString()));
+                          }
+
+                          if (state.entries.isEmpty) {
+                            return const Center(
+                              child: Text("No entries today"),
+                            );
+                          }
+
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              context.read<EntryBloc>().add(
+                                FetchTodayEntries(),
+                              );
+                            },
+                            child: ListView.separated(
+                              itemCount: state.entries.length,
+                              separatorBuilder: (_, _) =>
+                                  const SizedBox(height: 16),
+                              itemBuilder: (_, i) {
+                                final e = state.entries[i];
+                                return SmallTaskCard(
+                                  category: e.category.toUpperCase(),
+                                  title: e.title,
+                                  subtitle: _formatTime(e.createdAt),
+                                  duration: "${e.timeSpent}m",
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 100),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Today',
-                style: GoogleFonts.outfit(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1E1E1E),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  _buildHeaderChip(Icons.calendar_today, 'October 24'),
-                  const SizedBox(width: 12),
-                  _buildHeaderChip(Icons.timer_outlined, '4h 12m spent'),
-                ],
-              ),
-              const SizedBox(height: 30),
-              const DeepWorkCard(),
-              const SizedBox(height: 16),
-              const SmallTaskCard(
-                category: 'CREATIVE',
-                title: 'UI Refinement',
-                subtitle: 'Polishing the sanctuary aesthetic transitions.',
-                duration: '45m',
-              ),
-              const SizedBox(height: 16),
-              const SmallTaskCard(
-                category: 'ADMIN',
-                title: 'Email Sort',
-                subtitle: 'Inbound priority filtering for weekly sync.',
-                duration: '12m',
-              ),
-              const SizedBox(height: 16),
-              const DailyFlowCard(),
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Upcoming',
-                    style: GoogleFonts.outfit(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'View All',
-                      style: TextStyle(color: Color(0xFF5D5FEF)),
-                    ),
-                  ),
-                ],
-              ),
-              const UpcomingItem(
-                icon: Icons.door_front_door_outlined,
-                title: 'Team Coordination',
-                subtitle: 'Global Sync & Goal Alignment',
-                time: '14:00',
-              ),
-              const UpcomingItem(
-                icon: Icons.edit_note,
-                title: 'Journal Reflections',
-                subtitle: 'Daily closure and gratitude exercise',
-                time: '17:30',
-              ),
-              const SizedBox(height: 100),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => NewEntryScreen()),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NewEntryScreen()),
+                );
+              },
+              backgroundColor: AppColors.primary,
+              child: const Icon(Icons.add, color: Colors.white, size: 30),
+            ),
           );
         },
-        backgroundColor: const Color(0xFF5D5FEF),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

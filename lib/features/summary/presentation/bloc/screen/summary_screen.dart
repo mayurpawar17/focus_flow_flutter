@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/widgets/app_button.dart';
 
 class SummaryScreen extends StatelessWidget {
   const SummaryScreen({super.key});
@@ -10,61 +12,38 @@ class SummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              "Today's Summary",
-              style: GoogleFonts.outfit(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textHeadline,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Today's Summary",
+                style: GoogleFonts.outfit(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textHeadline,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Wednesday, October 25th — Your focus peak was at 10:45 AM.',
-              style: TextStyle(color: AppColors.textBody, fontSize: 14),
-            ),
-            const SizedBox(height: 30),
+              AppSpacing.vsm,
+              const Text(
+                'Wednesday, October 25th',
+                style: TextStyle(color: AppColors.textBody, fontSize: 14),
+              ),
+              AppSpacing.vxxl,
 
-            _buildAIPerspectiveCard(),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatTile(
-                    '14',
-                    'Tasks Completed',
-                    Icons.check_circle_outline,
-                    '+12% vs yesterday',
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildStatTile(
-                    '6.5h',
-                    'Total Time Focused',
-                    Icons.timer_outlined,
-                    'Daily Goal: 8h',
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            _buildFocusDistributionCard(),
-            const SizedBox(height: 16),
-            _buildActionableInsights(),
-            const SizedBox(height: 16),
-            _buildReflectCard(),
-            const SizedBox(height: 40),
-          ],
+              _buildAIPerspectiveCard(),
+              AppSpacing.vhuge,
+              AppButton(
+                icon: Icons.auto_awesome,
+                label: "Generate AI Summary",
+                type: ButtonType.primary,
+                onPressed: () {},
+              ),
+              AppSpacing.vhuge,
+            ],
+          ),
         ),
       ),
     );
@@ -136,7 +115,7 @@ class SummaryScreen extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 120,
                 height: 120,
                 child: CircularProgressIndicator(

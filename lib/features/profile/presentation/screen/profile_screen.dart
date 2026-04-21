@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
+import 'package:focus_flow_flutter/core/widgets/app_button.dart';
+import 'package:focus_flow_flutter/features/profile/presentation/screen/widgets/profile_header.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
@@ -11,58 +12,59 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            _buildAvatarHeader(),
-            const SizedBox(height: 12),
-            Text(
-              'Alex Rivera',
-              style: GoogleFonts.outfit(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textHeadline,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              ProfileHeader(
+                name: "Alex Rivera",
+                email: "alex.rivera@focusflow.com",
               ),
-            ),
-            const Text(
-              'alex.rivera@focusflow.com',
-              style: TextStyle(color: AppColors.textBody, fontSize: 16),
-            ),
-            const SizedBox(height: 40),
+              AppSpacing.vhuge,
 
-            _buildSectionHeader('ACCOUNT'),
-            _buildSettingsGroup([
-              _buildProfileOption(Icons.person_outline, 'Personal Information'),
-              _buildProfileOption(Icons.tune_rounded, 'Preferences'),
-              _buildProfileOption(Icons.security_outlined, 'Security'),
-            ]),
-
-            const SizedBox(height: 30),
-            _buildSectionHeader('APP SETTINGS'),
-            _buildSettingsGroup([
-              _buildProfileOption(
-                Icons.notifications_none_rounded,
-                'Notifications',
+              // _buildSectionHeader('ACCOUNT'),
+              // _buildSettingsGroup([
+              //   _buildProfileOption(
+              //     Icons.person_outline,
+              //     'Personal Information',
+              //   ),
+              //   _buildProfileOption(Icons.tune_rounded, 'Preferences'),
+              //   _buildProfileOption(Icons.security_outlined, 'Security'),
+              // ]),
+              //
+              // AppSpacing.vxxl,
+              // _buildSectionHeader('APP SETTINGS'),
+              // _buildSettingsGroup([
+              //   _buildProfileOption(
+              //     Icons.notifications_none_rounded,
+              //     'Notifications',
+              //   ),
+              //   _buildProfileOption(
+              //     Icons.lock_outline_rounded,
+              //     'Data & Privacy',
+              //   ),
+              //   _buildProfileOption(
+              //     Icons.nightlight_round_outlined,
+              //     'Dark Mode',
+              //     trailing: CupertinoSwitch(
+              //       value: true,
+              //       onChanged: (v) {},
+              //       activeColor: AppColors.primary,
+              //     ),
+              //   ),
+              // ]),
+              AppSpacing.vhuge,
+              AppButton(
+                icon: Icons.logout,
+                label: "Logout",
+                type: ButtonType.primary,
+                onPressed: () {},
               ),
-              _buildProfileOption(Icons.lock_outline_rounded, 'Data & Privacy'),
-              _buildProfileOption(
-                Icons.nightlight_round_outlined,
-                'Dark Mode',
-                trailing: CupertinoSwitch(
-                  value: true,
-                  onChanged: (v) {},
-                  activeColor: AppColors.primary,
-                ),
-              ),
-            ]),
-
-            const SizedBox(height: 40),
-            _buildLogOutButton(),
-            const SizedBox(height: 40),
-          ],
+              // _buildLogOutButton(),
+              AppSpacing.vhuge,
+            ],
+          ),
         ),
       ),
     );

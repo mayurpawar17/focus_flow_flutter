@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:focus_flow_flutter/core/widgets/custom_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_spacing.dart';
+import '../widgets/context_chip.dart';
+import '../widgets/section_label.dart';
 
 class NewEntryScreen extends StatelessWidget {
   const NewEntryScreen({super.key});
@@ -12,7 +16,7 @@ class NewEntryScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -25,118 +29,52 @@ class NewEntryScreen extends StatelessWidget {
                   color: AppColors.textHeadline,
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.vsm,
               const Text(
                 'Quiet your mind and record your progress.',
                 style: TextStyle(color: AppColors.textBody, fontSize: 16),
               ),
-              const SizedBox(height: 40),
+              AppSpacing.vhuge,
 
-              _buildSectionLabel('TASK IDENTITY'),
-              _buildTextField('What are you focusing on?'),
+              SectionLabel('TASK IDENTITY'),
+              CustomTextField(hint: 'What are you focusing on?'),
 
-              const SizedBox(height: 30),
-              _buildSectionLabel('CONTEXT'),
-              Wrap(
+              AppSpacing.vxxl,
+              SectionLabel('CONTEXT'),
+              const Wrap(
                 spacing: 10,
                 runSpacing: 10,
                 children: [
-                  _buildContextChip('Deep Work', isSelected: true),
-                  _buildContextChip('Creative'),
-                  _buildContextChip('Strategy'),
-                  _buildContextChip('Learning'),
-                  _buildContextChip('Admin'),
+                  ContextChip(label: 'Deep Work', isSelected: true),
+                  ContextChip(label: 'Creative'),
+                  ContextChip(label: 'Strategy'),
+                  ContextChip(label: 'Learning'),
+                  ContextChip(label: 'Admin'),
                 ],
               ),
 
-              const SizedBox(height: 30),
-              _buildSectionLabel('DURATION (OPTIONAL)'),
-              _buildTextField('e.g. 45m', icon: Icons.access_time_rounded),
+              AppSpacing.vxxl,
+              const SectionLabel('DURATION (OPTIONAL)'),
+              const CustomTextField(
+                hint: 'e.g. 45m',
+                icon: Icons.access_time_rounded,
+              ),
 
-              const SizedBox(height: 30),
-              _buildSectionLabel('MOMENT'),
-              _buildTextField(
-                'Today, 2:45 PM',
+              AppSpacing.vxxl,
+              const SectionLabel('MOMENT'),
+              const CustomTextField(
+                hint: 'Today, 2:45 PM',
                 icon: Icons.calendar_today_outlined,
               ),
 
-              const SizedBox(height: 40),
-              _buildQuoteCard(),
-              const SizedBox(height: 40),
+              // const SizedBox(height: 40),
+              // _buildQuoteCard(),
+              // const SizedBox(height: 40),
             ],
           ),
         ),
       ),
       bottomNavigationBar: _buildBottomActionBar(context),
-    );
-  }
-
-  Widget _buildSectionLabel(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
-          color: AppColors.textMuted,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String hint, {IconData? icon}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: icon != null
-              ? Icon(icon, color: AppColors.textMuted, size: 20)
-              : null,
-          hintStyle: const TextStyle(color: AppColors.textMuted),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 18,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContextChip(String label, {bool isSelected = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? AppColors.primaryLight
-            : AppColors.surface.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: isSelected
-              ? AppColors.primary
-              : AppColors.textHeadline.withOpacity(0.7),
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-        ),
-      ),
     );
   }
 
