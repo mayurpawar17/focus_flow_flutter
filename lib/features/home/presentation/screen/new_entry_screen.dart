@@ -25,6 +25,14 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   final TextEditingController _timeSpentController = TextEditingController();
 
   @override
+  void dispose() {
+    _titleController.dispose(); // Releases the memory
+    _contextController.dispose();
+    _timeSpentController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<EntryBloc, EntryState>(
       listener: (context, state) {

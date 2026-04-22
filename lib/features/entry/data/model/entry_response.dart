@@ -23,31 +23,3 @@ class EntryResponse {
     return data;
   }
 }
-
-// class Data {
-//   String? category;
-//   String? createdAt;
-//   int? id;
-//   int? timeSpent;
-//   String? title;
-//
-//   Data({this.category, this.createdAt, this.id, this.timeSpent, this.title});
-//
-//   Data.fromJson(Map<String, dynamic> json) {
-//     category = json['category'];
-//     createdAt = json['createdAt'];
-//     id = json['id'];
-//     timeSpent = json['timeSpent'];
-//     title = json['title'];
-//   }
-//
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['category'] = this.category;
-//     data['createdAt'] = this.createdAt;
-//     data['id'] = this.id;
-//     data['timeSpent'] = this.timeSpent;
-//     data['title'] = this.title;
-//     return data;
-//   }
-// }
