@@ -1,37 +1,45 @@
-import 'package:dio/dio.dart';
+import 'package:focus_flow_flutter/core/network/dio_client.dart';
 
 import '../../../summary/data/model/summary_model.dart';
-import '../model/entry_model.dart';
+import '../model/entry_request.dart';
+import '../model/entry_response.dart';
+import '../model/today_entry_response.dart';
 
-abstract class EntryRepo {
-  Future<List<EntryModel>> getTodayEntries();
-}
+class EntryRepo {
+  final DioClient dioClient;
 
-class EntryRemoteDataSourceImpl implements EntryRepo {
-  final Dio dio;
+  EntryRepo(this.dioClient);
 
-  EntryRemoteDataSourceImpl(this.dio);
-
-  @override
-  Future<List<EntryModel>> getTodayEntries() async {
-    final response = await dio.get('/entries/today');
+  Future<TodayEntryResponse> getTodayEntries() async {
+    final response = await dioClient.dio.get('/entries/today');
 
     if (response.data['status'] != 'success') {
       throw Exception(response.data['message']);
     }
 
-    final List data = response.data['data'];
-
-    return data.map((e) => EntryModel.fromJson(e)).toList();
+    return TodayEntryResponse.fromJson(response.data);
   }
 
   Future<SummaryModel> getTodaySummary() async {
-    final response = await dio.get('/entries/summary/today');
+    final response = await dioClient.dio.get('/entries/summary/today');
 
     if (response.data['status'] != 'success') {
       throw Exception(response.data['message']);
     }
 
     return SummaryModel.fromJson(response.data['data']);
+  }
+
+  Future<EntryResponse> saveTodayEntry(EntryRequest entryRequest) async {
+    final response = await dioClient.dio.post(
+      '/entries',
+      data: entryRequest.toJson(),
+    );
+
+    if (response.data['status'] != 'success') {
+      throw Exception(response.data['message']);
+    }
+
+    return EntryResponse.fromJson(response.data);
   }
 }

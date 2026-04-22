@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/utils/date_helper.dart';
 import 'header_chip.dart';
 
 class DashboardHeader extends StatelessWidget {
@@ -11,7 +13,7 @@ class DashboardHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        AppSpacing.vmd,
         Text(
           'WORKSPACE',
           style: GoogleFonts.outfit(
@@ -21,7 +23,7 @@ class DashboardHeader extends StatelessWidget {
             color: const Color(0xFF5D5FEF),
           ),
         ),
-        const SizedBox(height: 4),
+        AppSpacing.vxs,
         Text(
           'Today',
           style: GoogleFonts.outfit(
@@ -30,12 +32,16 @@ class DashboardHeader extends StatelessWidget {
             color: const Color(0xFF1E1E1E),
           ),
         ),
-        const SizedBox(height: 16),
-        const Row(
+        AppSpacing.vlg,
+
+        Row(
           children: [
-            HeaderChip(icon: Icons.calendar_today, label: 'October 24'),
-            SizedBox(width: 12),
-            HeaderChip(icon: Icons.timer_outlined, label: '4h 12m spent'),
+            HeaderChip(
+              icon: Icons.calendar_today,
+              label: DateHelper.getCurrentFormatted(),
+            ),
+            // AppSpacing.hmd,
+            // const HeaderChip(icon: Icons.timer_outlined, label: '4h 12m spent'),
           ],
         ),
       ],

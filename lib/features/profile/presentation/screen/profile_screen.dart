@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              ProfileHeader(
+              const ProfileHeader(
                 name: "Alex Rivera",
                 email: "alex.rivera@focusflow.com",
               ),

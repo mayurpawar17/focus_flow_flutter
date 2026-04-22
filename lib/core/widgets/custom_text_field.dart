@@ -5,8 +5,14 @@ import '../constants/app_colors.dart';
 class CustomTextField extends StatelessWidget {
   final String hint;
   final IconData? icon;
+  final TextEditingController? controller;
 
-  const CustomTextField({super.key, required this.hint, this.icon});
+  const CustomTextField({
+    super.key,
+    required this.hint,
+    this.icon,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +29,7 @@ class CustomTextField extends StatelessWidget {
         ],
       ),
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           hintText: hint,
           prefixIcon: icon != null

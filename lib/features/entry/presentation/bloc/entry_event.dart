@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../data/model/entry_request.dart';
+
 abstract class EntryEvent extends Equatable {
   const EntryEvent();
 
@@ -7,6 +9,13 @@ abstract class EntryEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchTodayEntries extends EntryEvent {}
+class FetchTodayEntriesEvent extends EntryEvent {}
 
-class FetchTodaySummary extends EntryEvent {}
+class SaveTodayEntryEvent extends EntryEvent {
+  final EntryRequest entryRequest;
+
+  const SaveTodayEntryEvent(this.entryRequest);
+
+  @override
+  List<Object?> get props => [entryRequest];
+}

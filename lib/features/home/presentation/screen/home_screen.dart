@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:focus_flow_flutter/features/profile/presentation/screen/profile_screen.dart';
-import 'package:focus_flow_flutter/features/summary/presentation/bloc/screen/summary_screen.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../summary/presentation/screen/summary_screen.dart';
 import 'dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {

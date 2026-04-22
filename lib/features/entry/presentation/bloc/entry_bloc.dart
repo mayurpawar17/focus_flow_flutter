@@ -5,38 +5,38 @@ import 'entry_event.dart';
 import 'entry_state.dart';
 
 class EntryBloc extends Bloc<EntryEvent, EntryState> {
-  final EntryRemoteDataSourceImpl repository;
+  final EntryRepo repository;
 
-  EntryBloc(this.repository) : super(const EntryState()) {
-    on<FetchTodayEntries>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
+  EntryBloc(this.repository) : super(EntryInitial()) {
+    on<FetchTodayEntriesEvent>(_onFetchTodayEntriesEvent);
+    on<SaveTodayEntryEvent>(_onSaveTodayEntryEvent);
+  }
 
-      try {
-        final entries = await repository.getTodayEntries();
-        emit(state.copyWith(entries: entries, isLoading: false));
-      } catch (e) {
-        emit(state.copyWith(error: e.toString(), isLoading: false));
-      }
-    });
+  Future<void> _onFetchTodayEntriesEvent(
+    FetchTodayEntriesEvent event,
+    Emitter<EntryState> emit,
+  ) async {
+    emit(EntryLoading());
 
-    // on<FetchTodayEntries>((event, emit) async {
-    //   emit(state.copyWith(isLoading: true, error: null));
-    //
-    //   try {
-    //     final entries = await repository.getTodayEntries();
-    //     emit(state.copyWith(entries: entries, isLoading: false));
-    //   } catch (e) {
-    //     emit(state.copyWith(error: e.toString(), isLoading: false));
-    //   }
-    // });
+    try {
+      final todayEntryResponse = await repository.getTodayEntries();
+      emit(EntrySuccess(todayEntryResponse: todayEntryResponse));
+    } catch (e) {
+      emit(EntryFailure(e.toString()));
+    }
+  }
 
-    on<FetchTodaySummary>((event, emit) async {
-      try {
-        final summary = await repository.getTodaySummary();
-        emit(state.copyWith(summary: summary));
-      } catch (e) {
-        emit(state.copyWith(error: e.toString()));
-      }
-    });
+  Future<void> _onSaveTodayEntryEvent(
+    SaveTodayEntryEvent event,
+    Emitter<EntryState> emit,
+  ) async {
+    emit(EntryLoading());
+    try {
+      final entryRequest = event.entryRequest;
+      final entryResponse = await repository.saveTodayEntry(entryRequest);
+      emit(EntrySaveSuccess(entryResponse: entryResponse));
+    } catch (e) {
+      emit(EntryFailure(e.toString()));
+    }
   }
 }

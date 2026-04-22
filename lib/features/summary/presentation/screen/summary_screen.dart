@@ -1,55 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/app_button.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../entry/data/repo/entry_repo.dart';
+import '../bloc/summary_bloc.dart';
+import '../bloc/summary_event.dart';
+import '../bloc/summary_state.dart';
 
 class SummaryScreen extends StatelessWidget {
   const SummaryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Today's Summary",
-                style: GoogleFonts.outfit(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textHeadline,
+    return BlocProvider<SummaryBloc>(
+      create: (context) {
+        return SummaryBloc(EntryRepo(DioClient()));
+      },
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: AppColors.scaffoldBg,
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Today's Summary",
+                      style: GoogleFonts.outfit(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textHeadline,
+                      ),
+                    ),
+                    AppSpacing.vxxl,
+
+                    BlocBuilder<SummaryBloc, SummaryState>(
+                      builder: (context, state) {
+                        if (state is SummaryLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (state is SummaryFailure) {
+                          return Center(child: Text(state.message.toString()));
+                        }
+
+                        if (state is SummarySuccess) {
+                          return _buildAIPerspectiveCard(state);
+                        }
+
+                        return const SizedBox();
+                      },
+                    ),
+                    AppSpacing.vhuge,
+                    AppButton(
+                      icon: Icons.auto_awesome,
+                      label: "Generate AI Summary",
+                      type: ButtonType.primary,
+                      onPressed: () {
+                        context.read<SummaryBloc>().add(
+                          FetchTodaySummaryEvent(),
+                        );
+                      },
+                    ),
+                    AppSpacing.vhuge,
+                  ],
                 ),
               ),
-              AppSpacing.vsm,
-              const Text(
-                'Wednesday, October 25th',
-                style: TextStyle(color: AppColors.textBody, fontSize: 14),
-              ),
-              AppSpacing.vxxl,
-
-              _buildAIPerspectiveCard(),
-              AppSpacing.vhuge,
-              AppButton(
-                icon: Icons.auto_awesome,
-                label: "Generate AI Summary",
-                type: ButtonType.primary,
-                onPressed: () {},
-              ),
-              AppSpacing.vhuge,
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildAIPerspectiveCard() {
+  Widget _buildAIPerspectiveCard(SummarySuccess state) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -60,6 +91,7 @@ class SummaryScreen extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -84,69 +116,40 @@ class SummaryScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: GoogleFonts.outfit(
-                fontSize: 18,
-                color: AppColors.textHeadline,
-                height: 1.4,
-              ),
-              children: const [
-                TextSpan(
-                  text:
-                      '"You were highly focused on deep work today! Your ability to maintain concentration for ',
-                ),
-                TextSpan(
-                  text: '140 minutes',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text:
-                      ' straight during the morning session set a high momentum for the day."',
-                ),
-              ],
+          Text(
+            "SUMMARY",
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              color: AppColors.textHeadline,
+              height: 1.4,
             ),
           ),
-          const SizedBox(height: 30),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              const SizedBox(
-                width: 120,
-                height: 120,
-                child: CircularProgressIndicator(
-                  value: 0.82,
-                  strokeWidth: 12,
-                  backgroundColor: AppColors.surface,
-                  color: AppColors.primary,
-                  strokeCap: StrokeCap.round,
-                ),
-              ),
-              Column(
-                children: [
-                  Text(
-                    '82%',
-                    style: GoogleFonts.outfit(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const Text(
-                    'EFFICIENCY',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          AppSpacing.vsm,
+          Text(
+            state.summaryModel.summary,
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              color: AppColors.textBody,
+              height: 1.4,
+            ),
+          ),
+          AppSpacing.vmd,
+          Text(
+            "INSIGHT",
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              color: AppColors.textHeadline,
+              height: 1.4,
+            ),
+          ),
+          AppSpacing.vsm,
+          Text(
+            state.summaryModel.insight,
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              color: AppColors.textBody,
+              height: 1.4,
+            ),
           ),
         ],
       ),
