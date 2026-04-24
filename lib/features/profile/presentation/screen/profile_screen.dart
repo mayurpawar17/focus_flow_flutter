@@ -32,15 +32,53 @@ class ProfileScreen extends StatelessWidget {
                 builder: (context, state) {
                   final isLight = state.themeMode == ThemeMode.light;
 
-                  return Switch(
-                    value: isLight,
-                    activeThumbColor: AppColors.primary,
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
 
-                    onChanged: (v) {
-                      context.read<ThemeBloc>().add(
-                        ChangeThemeEvent(v ? ThemeMode.light : ThemeMode.dark),
-                      );
-                    },
+                      leading: Icon(
+                        isLight ? Icons.light_mode : Icons.dark_mode,
+                        color: AppColors.primary,
+                      ),
+
+                      title: const Text(
+                        "Theme",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      trailing: Switch(
+                        value: isLight,
+                        activeColor: AppColors.primary,
+                        onChanged: (v) {
+                          context.read<ThemeBloc>().add(
+                            ChangeThemeEvent(
+                              v ? ThemeMode.light : ThemeMode.dark,
+                            ),
+                          );
+                        },
+                      ),
+
+                      onTap: () {
+                        final newMode = isLight
+                            ? ThemeMode.dark
+                            : ThemeMode.light;
+
+                        context.read<ThemeBloc>().add(
+                          ChangeThemeEvent(newMode),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
