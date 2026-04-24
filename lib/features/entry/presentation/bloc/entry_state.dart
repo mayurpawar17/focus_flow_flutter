@@ -104,10 +104,10 @@ class EntrySaveSuccess extends EntryState {
 /// 4. Failure State: Something went wrong (Validation error,
 /// Database full, Network error).
 class EntryFailure extends EntryState {
-  final String error;
+  final String message;
 
-  const EntryFailure(this.error);
+  const EntryFailure(this.message);
 
   @override
-  List<Object?> get props => [error];
+  List<Object?> get props => [message];
 }

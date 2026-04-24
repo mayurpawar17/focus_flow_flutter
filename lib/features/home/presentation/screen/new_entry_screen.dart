@@ -47,7 +47,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         if (state is EntryFailure) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(state.error.toString())));
+          ).showSnackBar(SnackBar(content: Text(state.message.toString())));
         }
       },
       child: Scaffold(
@@ -65,7 +65,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   style: GoogleFonts.outfit(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
+                    color: Theme.of(
+                      context,
+                    ).extension<AppThemeColors>()?.textPrimary,
                   ),
                 ),
                 AppSpacing.vsm,

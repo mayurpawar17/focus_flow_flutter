@@ -7,6 +7,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/theme/app_theme_colors.dart';
+import '../../../../core/widgets/app_error_widget.dart';
 import '../../../../core/widgets/app_loader.dart';
 import '../../../entry/data/repo/entry_repo.dart';
 import '../bloc/summary_bloc.dart';
@@ -14,7 +15,9 @@ import '../bloc/summary_event.dart';
 import '../bloc/summary_state.dart';
 
 class SummaryScreen extends StatelessWidget {
-  const SummaryScreen({super.key});
+  SummaryScreen({super.key});
+
+  bool isFailureState = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +53,23 @@ class SummaryScreen extends StatelessWidget {
                         if (state is SummaryLoading) {
                           return const AppLoader();
                         }
+
                         if (state is SummaryFailure) {
-                          return Center(child: Text(state.message.toString()));
+                          return AppErrorWidget(
+                            message: state.message,
+                            icon: Icons.cloud_off_rounded,
+                            actionLabel: "Retry",
+                            onAction: () {
+                              context.read<SummaryBloc>().add(
+                                FetchTodaySummaryEvent(),
+                              );
+                            },
+                          );
                         }
+                        // if (state is SummaryFailure) {
+                        //   isFailureState = true;
+                        //   return Center(child: Text(state.message.toString()));
+                        // }
 
                         if (state is SummarySuccess) {
                           return _buildAIPerspectiveCard(state, context);
@@ -62,13 +79,31 @@ class SummaryScreen extends StatelessWidget {
                       },
                     ),
                     AppSpacing.vhuge,
-                    AppButton(
-                      icon: Icons.auto_awesome,
-                      label: "Generate AI Summary",
-                      type: ButtonType.primary,
-                      onPressed: () {
-                        context.read<SummaryBloc>().add(
-                          FetchTodaySummaryEvent(),
+                    BlocBuilder<SummaryBloc, SummaryState>(
+                      buildWhen: (prev, curr) =>
+                          prev.runtimeType != curr.runtimeType,
+                      builder: (context, state) {
+                        // Hide button only in failure
+                        if (state is SummaryFailure) {
+                          return const SizedBox();
+                        }
+
+                        // Show loading state on button
+                        final isLoading = state is SummaryLoading;
+
+                        return AppButton(
+                          icon: Icons.auto_awesome,
+                          label: isLoading
+                              ? "Generating..."
+                              : "Generate AI Summary",
+                          type: ButtonType.primary,
+                          onPressed: isLoading
+                              ? null // disable while loading
+                              : () {
+                                  context.read<SummaryBloc>().add(
+                                    FetchTodaySummaryEvent(),
+                                  );
+                                },
                         );
                       },
                     ),

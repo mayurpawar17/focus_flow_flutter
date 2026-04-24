@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:focus_flow_flutter/core/network/dio_client.dart';
 
 import '../../../summary/data/model/summary_model.dart';
@@ -11,23 +12,63 @@ class EntryRepo {
   EntryRepo(this.dioClient);
 
   Future<TodayEntryResponse> getTodayEntries() async {
-    final response = await dioClient.dio.get('/entries/today');
+    try {
+      final response = await dioClient.dio.get('/entries/today');
 
-    if (response.data['status'] != 'success') {
-      throw Exception(response.data['message']);
+      if (response.data['status'] != 'success') {
+        throw Exception(response.data['message']);
+      }
+
+      return TodayEntryResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      // 🔥 Handle different cases
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw Exception("Server is taking too long. Try again.");
+      }
+
+      if (e.type == DioExceptionType.connectionError) {
+        throw Exception("No internet connection.");
+      }
+
+      if (e.response != null) {
+        throw Exception(e.response?.data['message'] ?? "Server error");
+      }
+
+      throw Exception("Something went wrong.");
+    } catch (e) {
+      throw Exception("Unexpected error occurred.");
     }
-
-    return TodayEntryResponse.fromJson(response.data);
   }
 
   Future<SummaryModel> getTodaySummary() async {
-    final response = await dioClient.dio.get('/entries/summary/today');
+    try {
+      final response = await dioClient.dio.get('/entries/summary/today');
 
-    if (response.data['status'] != 'success') {
-      throw Exception(response.data['message']);
+      if (response.data['status'] != 'success') {
+        throw Exception(response.data['message']);
+      }
+
+      return SummaryModel.fromJson(response.data['data']);
+    } on DioException catch (e) {
+      // 🔥 Handle different cases
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw Exception("Server is taking too long. Try again.");
+      }
+
+      if (e.type == DioExceptionType.connectionError) {
+        throw Exception("No internet connection.");
+      }
+
+      if (e.response != null) {
+        throw Exception(e.response?.data['message'] ?? "Server error");
+      }
+
+      throw Exception("Something went wrong.");
+    } catch (e) {
+      throw Exception("Unexpected error occurred.");
     }
-
-    return SummaryModel.fromJson(response.data['data']);
   }
 
   Future<EntryResponse> saveTodayEntry(EntryRequest entryRequest) async {
