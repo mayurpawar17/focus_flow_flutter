@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_flow_flutter/core/utils/date_helper.dart';
+import 'package:focus_flow_flutter/core/widgets/app_refresh.dart';
 import 'package:focus_flow_flutter/features/entry/data/model/today_entry_response.dart';
 
 import '../../../entry/presentation/bloc/entry_bloc.dart';
@@ -14,7 +15,7 @@ class EntryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return AppRefresh(
       onRefresh: () async {
         context.read<EntryBloc>().add(FetchTodayEntriesEvent());
       },

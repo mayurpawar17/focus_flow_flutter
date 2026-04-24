@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: IndexedStack(index: _currentIndex, children: _screens),
       ),
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
 
         height: 72,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         // backgroundColor: AppColors.textLight,
         indicatorColor: AppColors.primary.withOpacity(0.15),
 

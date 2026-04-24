@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/theme/app_theme_colors.dart';
+import '../../../../core/widgets/app_loader.dart';
 import '../../../entry/data/repo/entry_repo.dart';
 import '../bloc/summary_bloc.dart';
 import '../bloc/summary_event.dart';
@@ -23,7 +25,8 @@ class SummaryScreen extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            backgroundColor: AppColors.scaffoldBg,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -35,7 +38,9 @@ class SummaryScreen extends StatelessWidget {
                       style: GoogleFonts.outfit(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textHeadline,
+                        color: Theme.of(
+                          context,
+                        ).extension<AppThemeColors>()?.textPrimary,
                       ),
                     ),
                     AppSpacing.vxxl,
@@ -43,16 +48,14 @@ class SummaryScreen extends StatelessWidget {
                     BlocBuilder<SummaryBloc, SummaryState>(
                       builder: (context, state) {
                         if (state is SummaryLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                          return const AppLoader();
                         }
                         if (state is SummaryFailure) {
                           return Center(child: Text(state.message.toString()));
                         }
 
                         if (state is SummarySuccess) {
-                          return _buildAIPerspectiveCard(state);
+                          return _buildAIPerspectiveCard(state, context);
                         }
 
                         return const SizedBox();
@@ -80,11 +83,11 @@ class SummaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAIPerspectiveCard(SummarySuccess state) {
+  Widget _buildAIPerspectiveCard(SummarySuccess state, context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 20),
@@ -99,17 +102,21 @@ class SummaryScreen extends StatelessWidget {
               color: AppColors.primaryLight,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.auto_awesome, size: 14, color: AppColors.primary),
-                SizedBox(width: 6),
+                const Icon(
+                  Icons.auto_awesome,
+                  size: 14,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 6),
                 Text(
                   'AI PERSPECTIVE',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ],
@@ -117,10 +124,10 @@ class SummaryScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            "SUMMARY",
+            "SUMMARY :",
             style: GoogleFonts.outfit(
               fontSize: 18,
-              color: AppColors.textHeadline,
+              color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
               height: 1.4,
             ),
           ),
@@ -129,16 +136,16 @@ class SummaryScreen extends StatelessWidget {
             state.summaryModel.summary,
             style: GoogleFonts.outfit(
               fontSize: 18,
-              color: AppColors.textBody,
+              color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
               height: 1.4,
             ),
           ),
           AppSpacing.vmd,
           Text(
-            "INSIGHT",
+            "INSIGHT :",
             style: GoogleFonts.outfit(
               fontSize: 18,
-              color: AppColors.textHeadline,
+              color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
               height: 1.4,
             ),
           ),
@@ -147,7 +154,7 @@ class SummaryScreen extends StatelessWidget {
             state.summaryModel.insight,
             style: GoogleFonts.outfit(
               fontSize: 18,
-              color: AppColors.textBody,
+              color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
               height: 1.4,
             ),
           ),

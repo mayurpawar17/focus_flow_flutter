@@ -32,7 +32,6 @@ class HeaderChip extends StatelessWidget {
   }
 }
 
-// widgets/section_header.dart
 class SectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onActionPressed;

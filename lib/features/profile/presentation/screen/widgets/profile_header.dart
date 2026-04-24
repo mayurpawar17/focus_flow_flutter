@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/theme/app_theme_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -18,7 +19,7 @@ class ProfileHeader extends StatelessWidget {
           style: GoogleFonts.outfit(
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: AppColors.textHeadline,
+            color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
           ),
         ),
         Text(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
 import 'package:focus_flow_flutter/core/widgets/app_button.dart';
 import 'package:focus_flow_flutter/features/profile/presentation/screen/widgets/profile_header.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../theme/bloc/theme_bloc.dart';
+import '../../../theme/bloc/theme_event.dart';
+import '../../../theme/bloc/theme_state.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -11,7 +15,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -22,6 +27,23 @@ class ProfileScreen extends StatelessWidget {
                 email: "alex.rivera@focusflow.com",
               ),
               AppSpacing.vhuge,
+
+              BlocBuilder<ThemeBloc, ThemeState>(
+                builder: (context, state) {
+                  final isLight = state.themeMode == ThemeMode.light;
+
+                  return Switch(
+                    value: isLight,
+                    activeThumbColor: AppColors.primary,
+
+                    onChanged: (v) {
+                      context.read<ThemeBloc>().add(
+                        ChangeThemeEvent(v ? ThemeMode.light : ThemeMode.dark),
+                      );
+                    },
+                  );
+                },
+              ),
 
               // _buildSectionHeader('ACCOUNT'),
               // _buildSettingsGroup([

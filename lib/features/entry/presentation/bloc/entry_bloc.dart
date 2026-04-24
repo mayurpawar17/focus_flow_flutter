@@ -35,6 +35,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       final entryRequest = event.entryRequest;
       final entryResponse = await repository.saveTodayEntry(entryRequest);
       emit(EntrySaveSuccess(entryResponse: entryResponse));
+
+      // Automatically refresh the list after saving
+      add(FetchTodayEntriesEvent());
     } catch (e) {
       emit(EntryFailure(e.toString()));
     }

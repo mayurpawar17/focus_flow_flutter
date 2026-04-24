@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focus_flow_flutter/core/constants/app_spacing.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/utils/date_helper.dart';
 import 'header_chip.dart';
 
@@ -29,7 +30,7 @@ class DashboardHeader extends StatelessWidget {
           style: GoogleFonts.outfit(
             fontSize: 48,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF1E1E1E),
+            color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
           ),
         ),
         AppSpacing.vlg,

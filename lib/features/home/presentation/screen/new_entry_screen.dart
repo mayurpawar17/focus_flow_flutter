@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../entry/data/model/entry_request.dart';
 import '../../../entry/presentation/bloc/entry_bloc.dart';
 import '../../../entry/presentation/bloc/entry_event.dart';
@@ -50,7 +51,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -63,7 +65,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   style: GoogleFonts.outfit(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textHeadline,
+                    color: Theme.of(context).extension<AppThemeColors>()?.textPrimary,
                   ),
                 ),
                 AppSpacing.vsm,
@@ -117,7 +119,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   Widget _buildBottomActionBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 10, 24, 30),
-      color: AppColors.scaffoldBg,
+      color: Theme.of(context).scaffoldBackgroundColor,
+
       child: Row(
         children: [
           Expanded(
@@ -131,27 +134,32 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           ),
           AppSpacing.hmd,
           Expanded(
-            child: AppButton(
-              label: "Save",
-              icon: Icons.done_all,
-              type: ButtonType.primary,
-              onPressed: () {
-                final time = int.tryParse(_timeSpentController.text);
+            child: BlocBuilder<EntryBloc, EntryState>(
+              builder: (context, state) {
+                return AppButton(
+                  label: "Save",
+                  icon: Icons.done_all,
+                  isLoading: state is EntryLoading,
+                  type: ButtonType.primary,
+                  onPressed: () {
+                    final time = int.tryParse(_timeSpentController.text);
 
-                if (time == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Enter valid time")),
-                  );
-                  return;
-                }
-                final entryRequest = EntryRequest(
-                  title: _titleController.text,
-                  category: _contextController.text,
-                  timeSpent: time,
-                );
-                debugPrint("${entryRequest.toJson()}");
-                context.read<EntryBloc>().add(
-                  SaveTodayEntryEvent(entryRequest),
+                    if (time == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Enter valid time")),
+                      );
+                      return;
+                    }
+                    final entryRequest = EntryRequest(
+                      title: _titleController.text,
+                      category: _contextController.text,
+                      timeSpent: time,
+                    );
+                    debugPrint("${entryRequest.toJson()}");
+                    context.read<EntryBloc>().add(
+                      SaveTodayEntryEvent(entryRequest),
+                    );
+                  },
                 );
               },
             ),
